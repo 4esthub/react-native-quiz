@@ -5,27 +5,34 @@ import {
   Text,
 } from 'react-native';
 
-const Timer = () => {
-  const [seconds, setSeconds] = useState(0);
-  const [isActive, setIsActive] = useState(true);
+const Timer = (props) => {
+  const [seconds, setSeconds] = useState(props.seconds || 120);
 
   useEffect(() => {
     let interval = null;
-    if (isActive) {
+    if (seconds > 0) {
       interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
+        setSeconds(seconds => seconds - 1);
       }, 1000);
-    } else if (!isActive && seconds !== 0) {
+    } else {
+      props.complete();
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isActive, seconds]);
+  }, [seconds]);
 
   return (
     <View>
-      <Text>{seconds}</Text>
+      <Text style={styles.timerText}>
+          {seconds}
+        </Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  timerText: { fontSize: 40, margin: 20, textAlign: 'center' }
+});
+
 
 export default Timer;

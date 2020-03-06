@@ -2,17 +2,23 @@ import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View, 
-  Text
+  Text,
+  Button
 } from 'react-native';
 
 import Quiz from './components/workflows/Quiz'
 
 const App = () => {
   const [questions, setQuestions] = useState([]);
+  const [score, setScore] = useState(-1);
 
-  const handleCompleted = (score = 'undefined') => {
-    console.log(`quiz completed with a score of ${score}`);
+  const handleCompleted = (score) => {
+    setScore(score);
   };
+
+  const handleReset = () => {
+    setScore(-1);
+  }
 
   useEffect(() => {
     (async function fetchData () {
@@ -27,10 +33,18 @@ const App = () => {
 
 
   const MainView = () => {
-    if (questions.length &&
-        questions[0].question.length &&
-        questions[0].answers.length &&
-        questions[0].correct_index) {
+    if (score >= 0) {
+      const total = questions.length;
+      return (
+        <View>
+          <Text>{`You scored ${score}/${total}`}</Text>
+            <Button 
+              title="Reset"
+              onPress={handleReset}
+            />
+        </View>
+      )
+    } else if (questions.length) {
       return (
         <Quiz 
           questions={questions}

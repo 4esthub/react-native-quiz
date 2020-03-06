@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  // StyleSheet,
+  StyleSheet,
   View,
   Text,
   Button
@@ -9,44 +9,85 @@ import {
 import Timer from '../Timer';
 
 const Quiz = (props) => {
-  // const [questions, setQuestions] = useState(props.questions);
   const [index, setIndex] = useState(0);
-  const [active, setActive] = useState(false);
+  const [selected, setSelected] = useState('');
+  const [score, setScore] = useState(0);
 
-  // useEffect(() => {
-  //   setQuestions(props.questions);
-  //   setIndex(0);
-  //   setActive(true);
-  // }, [props.questions]);
+  const handleSelect = (value) => {
+    setSelected(value);
+  }
+
+  const handleSubmit = () => {
+    const question = props.questions[index],
+          answer = question.answers[question.correct_index];
+    
+    let currentScore = score;
+
+    if (answer === selected) {
+      currentScore++;
+      setScore(currentScore);
+    }
+
+    if (index >= props.questions.length - 1) {
+      props.completed(currentScore)
+    } else {
+      setIndex(index + 1);
+      setSelected('');
+    }
+  }
+
+  const handleTimerComplete = () => {
+    props.completed(score)
+  }
+
+  const Question = (props) => {
+    const answers = props.question.answers.map((e, i) => {
+      return (
+        <Button
+          key={i}
+          title={e}
+          onPress={() => {handleSelect(e)}}
+          color={e === selected ? 'green' : 'blue'}
+        />
+      )
+    });
+    return (
+      <View >
+        <Text style={styles.questionText}>
+          {props.question.question}
+        </Text>
+        {answers}
+      </View>
+    )
+  }
+
+  const SubmitButton = selected ?
+    (<Button 
+      title="Submit"
+      onPress={handleSubmit}
+      style={styles.buttonHeight}
+      color="red"
+    />) :
+    <View style={styles.buttonHeight} />;
 
   return (
     <>
       <View>
-        <Timer />
+        <Timer  
+          complete={handleTimerComplete}
+        />
         <Question question={props.questions[index]} />
+        {SubmitButton}
       </View>
     </>
   );
 };
 
-const Question = (props) => {
-  const answers = props.question.answers.map((e, i) => {
-    return (
-      <Button
-        key={i}
-        title={e} />
-    )
-  });
-  return (
-    <View>
-      <Text>{props.question.question}</Text>
-      {answers}
-    </View>
-  )
-}
 
-// const styles = StyleSheet.create({
-//   app: { flex: 1, justifyContent: "center", alignItems: "center" }
-// });
+const styles = StyleSheet.create({
+  selected: { borderColor: 'blue' },
+  questionText: { fontSize: 20, margin: 20 },
+  buttonHeight: { height: 40 }
+});
 
 export default Quiz;
