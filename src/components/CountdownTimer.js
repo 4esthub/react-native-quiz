@@ -4,8 +4,9 @@ import {
   View,
   Text,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
-const Timer = (props) => {
+const CountdownTimer = (props) => {
   const [seconds, setSeconds] = useState(props.seconds || 120);
 
   useEffect(() => {
@@ -30,9 +31,12 @@ const Timer = (props) => {
   );
 };
 
+CountdownTimer.propTypes = {  // add props typechecking
+  seconds: PropTypes.number
+};
+
 const styles = StyleSheet.create({
   timerText: { fontSize: 40, margin: 20, textAlign: 'center' }
 });
 
-
-export default Timer;
+export default CountdownTimer;

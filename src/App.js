@@ -10,14 +10,16 @@ import Quiz from './components/workflows/Quiz'
 
 const App = () => {
   const [questions, setQuestions] = useState([]);
-  const [score, setScore] = useState(-1);
+  const [score, setScore] = useState(-1);          // no longer determines quiz state
+  const [quizState, setQuizState] = useState('');  // quizStates: '', 'active', 'completed' (perminent comment)
 
   const handleCompleted = (score) => {
     setScore(score);
+    setQuizState('completed');  // set quiz state to completed
   };
 
   const handleReset = () => {
-    setScore(-1);
+    setQuizState('active');  // set quiz state to playing, remove set score
   }
 
   useEffect(() => {
@@ -27,13 +29,15 @@ const App = () => {
       );
       const json = await res.json();
 
+      console.log(json);
       setQuestions(json);
+      setQuizState('active'); // set gameState to playing
     })();
   }, []);
 
 
   const MainView = () => {
-    if (score >= 0) {
+    if (quizState === 'completed') {  // check quiz state
       const total = questions.length;
       return (
         <View>
@@ -44,7 +48,7 @@ const App = () => {
             />
         </View>
       )
-    } else if (questions.length) {
+    } else if (quizState === 'active') {  // check quiz state
       return (
         <Quiz 
           questions={questions}

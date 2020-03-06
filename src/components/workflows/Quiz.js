@@ -5,8 +5,9 @@ import {
   Text,
   Button
 } from 'react-native';
+import PropTypes from 'prop-types';
 
-import Timer from '../Timer';
+import CountdownTimer from '../CountdownTimer';
 
 const Quiz = (props) => {
   const [index, setIndex] = useState(0);
@@ -64,8 +65,7 @@ const Quiz = (props) => {
   const SubmitButton = selected ?
     (<Button 
       title="Submit"
-      onPress={handleSubmit}
-      style={styles.buttonHeight}
+      onPress={handleSubmit}            // remove button height style (cause does nothing)
       color="red"
     />) :
     <View style={styles.buttonHeight} />;
@@ -73,7 +73,7 @@ const Quiz = (props) => {
   return (
     <>
       <View>
-        <Timer  
+        <CountdownTimer  
           complete={handleTimerComplete}
         />
         <Question question={props.questions[index]} />
@@ -83,11 +83,15 @@ const Quiz = (props) => {
   );
 };
 
+Quiz.propTypes = {  // add props typechecking
+  questions: PropTypes.array.isRequired,
+  completed: PropTypes.func.isRequired
+};
 
 const styles = StyleSheet.create({
   selected: { borderColor: 'blue' },
   questionText: { fontSize: 20, margin: 20 },
-  buttonHeight: { height: 40 }
+  buttonHeight: { height: 39 }                  // adjust to actual button height
 });
 
 export default Quiz;
